@@ -1,0 +1,4309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookExchange | Share Knowledge</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --peach: #FFD8CC;
+            --cream: #FFF5E1;
+            --soft-brown: #D7CCC8;
+            --pastel-orange: #FFB74D;
+            --dark-brown: #5D4037;
+            --light-shadow: rgba(0, 0, 0, 0.1);
+            --medium-shadow: rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --info: #2196F3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Welcome Page Styles */
+        .welcome-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--pastel-orange), #FF9800);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .welcome-page.hidden {
+            opacity: 0;
+            transform: translateY(-100%);
+            pointer-events: none;
+        }
+
+        .welcome-logo {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: bounceIn 1.5s ease;
+        }
+
+        .welcome-logo i {
+            font-size: 4rem;
+            color: white;
+            margin-bottom: 20px;
+            display: block;
+            animation: pulse 2s infinite;
+        }
+
+        .welcome-logo h1 {
+            font-size: 3.5rem;
+            color: white;
+            font-weight: 700;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .welcome-logo p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-top: 10px;
+        }
+
+        .loading-bar {
+            width: 300px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            margin: 30px 0;
+            overflow: hidden;
+        }
+
+        .loading-progress {
+            width: 0%;
+            height: 100%;
+            background: white;
+            border-radius: 10px;
+            transition: width 3s ease-in-out;
+            animation: loading 3s ease-in-out;
+        }
+
+        .welcome-tagline {
+            text-align: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: fadeInUp 1s ease 1s forwards;
+        }
+
+        .enter-btn {
+            padding: 15px 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            animation: fadeInUp 1s ease 2s forwards;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .enter-btn:hover {
+            background: white;
+            color: var(--pastel-orange);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .floating-books {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .floating-book {
+            position: absolute;
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.3);
+            animation: floatAround 15s infinite linear;
+        }
+
+        .floating-book:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+        .floating-book:nth-child(2) { top: 60%; left: 80%; animation-delay: -2s; }
+        .floating-book:nth-child(3) { top: 80%; left: 20%; animation-delay: -4s; }
+        .floating-book:nth-child(4) { top: 30%; left: 70%; animation-delay: -6s; }
+        .floating-book:nth-child(5) { top: 70%; left: 40%; animation-delay: -8s; }
+
+        /* Welcome Page Animations */
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes loading {
+            0% {
+                width: 0%;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes floatAround {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(50px, 50px) rotate(90deg);
+            }
+            50% {
+                transform: translate(0, 100px) rotate(180deg);
+            }
+            75% {
+                transform: translate(-50px, 50px) rotate(270deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+
+        /* Main Website Styles */
+        body {
+            background-color: var(--cream);
+            color: var(--dark-brown);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header & Navigation */
+        header {
+            background-color: var(--cream);
+            box-shadow: 0 2px 10px var(--light-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            position: relative;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-brown);
+            text-decoration: none;
+        }
+
+        .logo i {
+            color: var(--pastel-orange);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark-brown);
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--pastel-orange);
+        }
+
+        .nav-links a.active {
+            color: var(--pastel-orange);
+            font-weight: 600;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--pastel-orange);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--pastel-orange), #FF9800);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 183, 77, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(45, 28, 2, 0.6);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--pastel-orange);
+            color: var(--pastel-orange);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--pastel-orange);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-info {
+            background: var(--info);
+            color: white;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+            transform: translateY(-3px);
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--dark-brown);
+        }
+
+        .mobile-nav {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: var(--cream);
+            flex-direction: column;
+            padding: 20px;
+            gap: 15px;
+            box-shadow: 0 5px 10px var(--light-shadow);
+            z-index: 1000;
+        }
+
+        .mobile-nav.active {
+            display: flex;
+        }
+
+        .mobile-nav a {
+            text-decoration: none;
+            color: var(--dark-brown);
+            font-weight: 500;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--soft-brown);
+            transition: var(--transition);
+        }
+
+        .mobile-nav a:hover,
+        .mobile-nav a.active {
+            color: var(--pastel-orange);
+        }
+
+        .mobile-auth-buttons {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        /* Page Sections */
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 0;
+            background: linear-gradient(135deg, rgba(255, 216, 204, 0.85) 0%, rgba(255, 245, 225, 0.85) 100%), 
+                        url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') center/cover no-repeat;
+            overflow: hidden;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-text {
+            flex: 1;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 10px;
+            color: var(--dark-brown);
+            animation: slideInLeft 0.8s ease;
+        }
+
+        .hero-tagline {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            margin-bottom: 30px;
+            color: var(--dark-brown);
+            opacity: 0.8;
+            animation: slideInLeft 1s ease;
+        }
+
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: slideInRight 0.8s ease;
+        }
+
+        .book-illustration {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            animation: float 6s ease-in-out infinite;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+            background-color: white;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            margin-bottom: 50px;
+            color: var(--dark-brown);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, var(--pastel-orange), #FF9800);
+            border-radius: 2px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px var(--light-shadow);
+            transition: var(--transition);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .feature-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px var(--medium-shadow);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--peach), var(--pastel-orange));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2rem;
+            color: white;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--dark-brown);
+        }
+
+        /* Books Page */
+        .books-page {
+            padding: 80px 0;
+            background-color: var(--cream);
+        }
+
+        .search-filter {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .search-bar {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border-radius: 30px;
+            border: 1px solid var(--soft-brown);
+            background-color: white;
+            font-family: 'Poppins', sans-serif;
+            transition: var(--transition);
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--pastel-orange);
+            box-shadow: 0 0 0 3px rgba(255, 183, 77, 0.2);
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+        }
+
+        .filter-dropdown {
+            min-width: 200px;
+        }
+
+        .filter-dropdown select {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 30px;
+            border: 1px solid var(--soft-brown);
+            background-color: white;
+            font-family: 'Poppins', sans-serif;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235D4037' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+            transition: var(--transition);
+        }
+
+        .filter-dropdown select:focus {
+            outline: none;
+            border-color: var(--pastel-orange);
+            box-shadow: 0 0 0 3px rgba(255, 183, 77, 0.2);
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .book-card {
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px var(--light-shadow);
+            transition: var(--transition);
+            opacity: 0;
+            transform: translateY(20px);
+            cursor: pointer;
+        }
+
+        .book-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .book-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px var(--medium-shadow);
+        }
+
+        .book-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .book-card:hover .book-image {
+            transform: scale(1.05);
+        }
+
+        .book-info {
+            padding: 20px;
+        }
+
+        .book-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark-brown);
+        }
+
+        .book-author {
+            font-size: 0.9rem;
+            color: #777;
+            margin-bottom: 10px;
+        }
+
+        .book-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #777;
+        }
+
+        /* Book Acquisition Styles */
+        .book-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .book-actions .btn {
+            flex: 1;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .status-available {
+            background: #E8F5E9;
+            color: var(--success);
+        }
+
+        .status-reserved {
+            background: #FFF3E0;
+            color: var(--warning);
+        }
+
+        .status-trading {
+            background: #E3F2FD;
+            color: var(--info);
+        }
+
+        /* Get Books Page */
+        .get-books-page {
+            padding: 80px 0;
+            background-color: var(--cream);
+        }
+
+        .methods-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .method-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px var(--light-shadow);
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .method-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px var(--medium-shadow);
+        }
+
+        .method-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--pastel-orange);
+        }
+
+        /* Steps Container */
+        .steps-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px var(--light-shadow);
+            transition: var(--transition);
+        }
+
+        .step:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px var(--medium-shadow);
+        }
+
+        .step-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--peach), var(--pastel-orange));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: var(--pastel-orange);
+            color: white;
+            border-radius: 50%;
+            line-height: 30px;
+            margin-bottom: 15px;
+        }
+
+        /* Trade Process */
+        .trade-process {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 50px;
+            position: relative;
+        }
+
+        .trade-process::before {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--pastel-orange);
+            z-index: 1;
+        }
+
+        .process-step {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            background: var(--cream);
+            padding: 0 15px;
+        }
+
+        .process-icon {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 1.5rem;
+            color: var(--pastel-orange);
+            border: 2px solid var(--pastel-orange);
+        }
+
+        /* Request Form */
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--soft-brown);
+            font-family: 'Poppins', sans-serif;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--pastel-orange);
+            box-shadow: 0 0 0 3px rgba(255, 183, 77, 0.2);
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Enhanced Profile Page Styles */
+        .profile-page {
+            padding: 40px 0;
+            background: 
+                linear-gradient(135deg, rgba(255, 216, 204, 0.8) 0%, rgba(255, 245, 225, 0.8) 100%),
+                url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2053&q=80') center/cover no-repeat;
+            min-height: 100vh;
+        }
+
+        .profile-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .profile-header {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: linear-gradient(135deg, var(--pastel-orange), #FF9800);
+            z-index: 1;
+        }
+
+        .profile-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: flex-start;
+            gap: 30px;
+        }
+
+        .profile-avatar {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .avatar-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid white;
+            background: var(--cream);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--pastel-orange);
+            overflow: hidden;
+        }
+
+        .avatar-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .edit-avatar {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--pastel-orange);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .edit-avatar:hover {
+            transform: scale(1.1);
+            background: #FF9800;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .user-details h1 {
+            font-size: 2.5rem;
+            color: var(--dark-brown);
+            margin-bottom: 5px;
+        }
+
+        .user-bio {
+            color: #777;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            max-width: 500px;
+        }
+
+        .user-location, .user-joined {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #777;
+            margin-bottom: 10px;
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .stat-card {
+            background: var(--cream);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--pastel-orange);
+            display: block;
+        }
+
+        .stat-label {
+            color: var(--dark-brown);
+            font-size: 0.9rem;
+        }
+
+        .profile-tabs {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tabs-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            border: none;
+            background: transparent;
+            color: var(--dark-brown);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn.active {
+            background: var(--pastel-orange);
+            color: white;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: var(--cream);
+        }
+
+        .tab-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* My Books Tab */
+        .profile-books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .book-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        .status-available {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .status-trading {
+            background: #FF9800;
+            color: white;
+        }
+
+        .status-reserved {
+            background: #9C27B0;
+            color: white;
+        }
+
+        /* Reviews Tab */
+        .reviews-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .review-card {
+            background: var(--cream);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid var(--pastel-orange);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .review-book {
+            font-weight: 600;
+            color: var(--dark-brown);
+        }
+
+        .review-rating {
+            display: flex;
+            gap: 2px;
+        }
+
+        .review-rating .fas {
+            color: #FFC107;
+        }
+
+        .review-date {
+            font-size: 0.8rem;
+            color: #777;
+        }
+
+        .review-text {
+            line-height: 1.6;
+            color: var(--dark-brown);
+        }
+
+        /* Achievements Tab */
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .achievement-card {
+            background: var(--cream);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .achievement-card.locked {
+            opacity: 0.6;
+        }
+
+        .achievement-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .achievement-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .achievement-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark-brown);
+        }
+
+        .achievement-desc {
+            font-size: 0.9rem;
+            color: #777;
+            margin-bottom: 10px;
+        }
+
+        .achievement-progress {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--pastel-orange);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .achievement-date {
+            font-size: 0.8rem;
+            color: #777;
+        }
+
+        /* Settings Tab */
+        .settings-section {
+            margin-bottom: 30px;
+        }
+
+        .settings-section h3 {
+            margin-bottom: 20px;
+            color: var(--dark-brown);
+            border-bottom: 2px solid var(--cream);
+            padding-bottom: 10px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .setting-info h4 {
+            margin-bottom: 5px;
+            color: var(--dark-brown);
+        }
+
+        .setting-info p {
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--pastel-orange);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        .genre-tags {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .genre-tag {
+            padding: 5px 15px;
+            background: var(--cream);
+            border-radius: 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .genre-tag.active {
+            background: var(--pastel-orange);
+            color: white;
+        }
+
+        /* Edit Profile Modal */
+        .edit-profile-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .edit-profile-modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        /* Add Book Page */
+        .add-book-page {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #FFD8CC 0%, #FFF5E1 50%, #FFB74D 100%);
+            background-image: 
+                url('https://images.unsplash.com/photo-1548048026-5a1a941d93d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80'),
+                linear-gradient(135deg, rgba(255, 216, 204, 0.6) 0%, rgba(255, 245, 225, 0.6) 50%, rgba(255, 183, 77, 0.4) 100%);
+            background-blend-mode: overlay, normal;
+            background-size: cover, auto;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .add-book-form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.90);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            position: relative;
+        }
+
+        .add-book-form-container::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 1px solid rgba(255, 183, 77, 0.2);
+            border-radius: 10px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .add-book-form-container form {
+            position: relative;
+            z-index: 1;
+        }
+
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 15px;
+            background-color: var(--cream);
+            border: 1px dashed var(--pastel-orange);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .file-upload-label:hover {
+            background-color: var(--peach);
+        }
+
+        /* Login Page */
+        .login-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, rgba(255, 183, 77, 0.9), rgba(255, 152, 0, 0.9)), 
+                        url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .login-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            min-height: 600px;
+        }
+
+        .login-image {
+            background: linear-gradient(135deg, rgba(255, 183, 77, 0.8), rgba(255, 152, 0, 0.8)), 
+                        url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1856&q=80') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+
+        .login-image-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .login-image h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .login-image p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .login-features {
+            text-align: left;
+            margin-top: 30px;
+        }
+
+        .login-feature {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+
+        .login-feature i {
+            background: rgba(255, 255, 255, 0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .login-form-section {
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .glass-card {
+            background: transparent;
+            backdrop-filter: none;
+            border: none;
+            box-shadow: none;
+            padding: 0;
+            width: 100%;
+            max-width: none;
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.2rem;
+            color: var(--dark-brown);
+            position: relative;
+        }
+
+        .form-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(to right, var(--pastel-orange), #FF9800);
+            border-radius: 2px;
+        }
+
+        /* About Page */
+        .about-page {
+            padding: 80px 0;
+            background-color: var(--cream);
+        }
+
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .about-text {
+            margin-bottom: 40px;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .team-member {
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .team-member.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .member-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--peach), var(--pastel-orange));
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            transition: var(--transition);
+        }
+
+        .team-member:hover .member-avatar {
+            transform: scale(1.1);
+        }
+
+        /* Contact Page */
+        .contact-page {
+            padding: 80px 0;
+            background-color: white;
+        }
+
+        .contact-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        .contact-item.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--peach), var(--pastel-orange));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .contact-item:hover .contact-icon {
+            transform: rotate(15deg) scale(1.1);
+        }
+
+        /* Featured Books */
+        .featured-books {
+            padding: 80px 0;
+            background-color: var(--cream);
+        }
+
+        .books-carousel {
+            position: relative;
+            overflow: hidden;
+            padding: 20px 0;
+        }
+
+        .books-container {
+            display: flex;
+            transition: transform 0.5s ease;
+            gap: 20px;
+        }
+
+        .carousel-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .carousel-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: white;
+            border: none;
+            box-shadow: 0 2px 10px var(--light-shadow);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .carousel-btn:hover {
+            background-color: var(--pastel-orange);
+            color: white;
+            transform: scale(1.1);
+        }
+
+       /* Stats Section */
+.stats {
+    padding: 100px 0;
+    background: 
+        linear-gradient(135deg, var(--pastel-orange) 0%, #FF9800 50%, #F57C00 100%),
+        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path fill="%23ffffff" d="M30,30 Q50,10 70,30 T90,50 T70,70 T50,90 T30,70 T10,50 T30,30 Z"/></svg>') repeat;
+    color: white;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.stats::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.stats::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.05"><polygon fill="%23ffffff" points="50,10 70,40 95,45 75,65 80,95 50,80 20,95 25,65 5,45 30,40"/></svg>') repeat;
+    animation: floatStars 60s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes floatStars {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+    100% {
+        transform: translate(-100px, -50px) rotate(1deg);
+    }
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 40px;
+    position: relative;
+    z-index: 2;
+}
+
+.stat-item {
+    padding: 40px 30px;
+    opacity: 0;
+    transform: translateY(40px) scale(0.8);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.stat-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.stat-item:hover::before {
+    left: 100%;
+}
+
+.stat-item.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    animation: statItemReveal 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes statItemReveal {
+    0% {
+        opacity: 0;
+        transform: translateY(50px) scale(0.8) rotateX(45deg);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+    50% {
+        opacity: 0.8;
+        transform: translateY(-10px) scale(1.05) rotateX(0);
+        box-shadow: 0 25px 50px rgba(255, 183, 77, 0.4);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotateX(0);
+        box-shadow: 
+            0 15px 35px rgba(0, 0, 0, 0.25),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+}
+
+/* Staggered animation delays */
+.stat-item.visible:nth-child(1) { animation-delay: 0.1s; }
+.stat-item.visible:nth-child(2) { animation-delay: 0.2s; }
+.stat-item.visible:nth-child(3) { animation-delay: 0.3s; }
+.stat-item.visible:nth-child(4) { animation-delay: 0.4s; }
+
+.stat-item:hover {
+    transform: translateY(-8px) scale(1.02);
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 
+        0 20px 50px rgba(255, 183, 77, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.stat-number {
+    font-size: 4rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+    background: linear-gradient(135deg, #FFFFFF, #FFE0B2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 2px 10px rgba(255, 255, 255, 0.3);
+    position: relative;
+    display: inline-block;
+}
+
+.stat-number::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+    border-radius: 2px;
+}
+
+.stat-label {
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    opacity: 0.9;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+/* Add decorative icons */
+.stat-item:nth-child(1)::after {
+    content: '📚';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 1.8rem;
+    opacity: 0.3;
+}
+
+.stat-item:nth-child(2)::after {
+    content: '👥';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 1.8rem;
+    opacity: 0.3;
+}
+
+.stat-item:nth-child(3)::after {
+    content: '🏫';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 1.8rem;
+    opacity: 0.3;
+}
+
+.stat-item:nth-child(4)::after {
+    content: '⭐';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 1.8rem;
+    opacity: 0.3;
+}
+
+/* Pulse animation for numbers */
+@keyframes pulseGlow {
+    0%, 100% {
+        text-shadow: 0 2px 10px rgba(255, 255, 255, 0.3);
+    }
+    50% {
+        text-shadow: 0 2px 20px rgba(255, 255, 255, 0.6), 0 0 30px rgba(255, 255, 255, 0.4);
+    }
+}
+
+.stat-item.visible .stat-number {
+    animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .stats {
+        padding: 80px 0;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+    }
+    
+    .stat-item {
+        padding: 30px 20px;
+    }
+    
+    .stat-number {
+        font-size: 3rem;
+    }
+    
+    .stat-label {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .stat-number {
+        font-size: 2.8rem;
+    }
+    
+    .stat-label {
+        font-size: 1rem;
+    }
+}
+
+/* Enhanced scroll animation trigger */
+.stat-item.visible {
+    animation-duration: 0.8s;
+    animation-fill-mode: both;
+}
+
+/* Add counter animation for numbers */
+.stat-number.animating {
+    animation: countUp 2s ease-out forwards;
+}
+
+@keyframes countUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.5);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-brown);
+            color: white;
+            padding: 60px 0 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--pastel-orange);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--pastel-orange);
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background-color: var(--pastel-orange);
+            transform: translateY(-5px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .toggle-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--pastel-orange);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px var(--medium-shadow);
+            transition: var(--transition);
+        }
+
+        .toggle-btn:hover {
+            transform: rotate(30deg) scale(1.1);
+        }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode header {
+            background-color: #2d2d2d;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode .hero {
+            background: linear-gradient(135deg, #3a261f 0%, #2d2d2d 100%);
+        }
+
+        body.dark-mode .features,
+        body.dark-mode .form-container,
+        body.dark-mode .book-card,
+        body.dark-mode .feature-card {
+            background-color: #2d2d2d;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .search-bar input,
+        body.dark-mode .filter-dropdown select,
+        body.dark-mode .form-control {
+            background-color: #3a3a3a;
+            border-color: #555;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode footer {
+            background-color: #1a1a1a;
+        }
+
+        body.dark-mode .profile-header,
+        body.dark-mode .profile-tabs,
+        body.dark-mode .tab-content,
+        body.dark-mode .reading-stat-card {
+            background-color: #2d2d2d;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .stat-card,
+        body.dark-mode .review-card,
+        body.dark-mode .achievement-card {
+            background-color: #3a3a3a;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .hero-title {
+                font-size: 2.8rem;
+            }
+
+            .login-container {
+                grid-template-columns: 1fr;
+            }
+
+            .steps-container {
+                flex-direction: column;
+            }
+            
+            .trade-process {
+                flex-direction: column;
+                gap: 40px;
+            }
+            
+            .trade-process::before {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links, .auth-buttons {
+                display: none;
+            }
+            
+            .mobile-menu {
+                display: block;
+            }
+            
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .search-filter {
+                flex-direction: column;
+            }
+            
+            .search-bar {
+                min-width: 100%;
+            }
+            
+            .mobile-nav {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: var(--cream);
+                flex-direction: column;
+                padding: 20px;
+                gap: 15px;
+                box-shadow: 0 5px 10px var(--light-shadow);
+                z-index: 1000;
+            }
+            
+            .mobile-nav.active {
+                display: flex;
+            }
+            
+            .welcome-logo h1 {
+                font-size: 2.5rem;
+            }
+            
+            .welcome-tagline {
+                font-size: 1.2rem;
+            }
+
+            .profile-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-main {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .profile-actions {
+                justify-content: center;
+            }
+
+            .profile-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .tabs-container {
+                justify-content: center;
+            }
+
+            .methods-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero-title {
+                font-size: 1.8rem;
+            }
+            
+            .feature-card {
+                padding: 20px;
+            }
+            
+            .btn {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+            
+            .form-container, .glass-card {
+                padding: 25px;
+            }
+            
+            .book-illustration {
+                max-width: 300px;
+            }
+            
+            .welcome-logo h1 {
+                font-size: 2rem;
+            }
+            
+            .welcome-logo i {
+                font-size: 3rem;
+            }
+            
+            .loading-bar {
+                width: 250px;
+            }
+
+            .profile-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .books-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .achievements-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .book-actions {
+                flex-direction: column;
+            }
+            
+            .book-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            /* Mobile Menu Styles */
+.mobile-menu {
+    display: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: var(--dark-brown);
+    padding: 10px;
+    border-radius: 5px;
+    transition: var(--transition);
+}
+
+.mobile-menu:hover {
+    background-color: var(--pastel-orange);
+    color: white;
+}
+
+.mobile-nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--cream);
+    flex-direction: column;
+    padding: 20px;
+    gap: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    border-radius: 0 0 15px 15px;
+    border-top: 2px solid var(--pastel-orange);
+}
+
+.mobile-nav.active {
+    display: flex;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.mobile-nav-link {
+    text-decoration: none;
+    color: var(--dark-brown);
+    font-weight: 500;
+    padding: 12px 15px;
+    border-radius: 8px;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+}
+
+.mobile-nav-link:hover {
+    background-color: var(--pastel-orange);
+    color: white;
+    transform: translateX(5px);
+}
+
+.mobile-nav-link i {
+    width: 20px;
+    text-align: center;
+}
+
+.mobile-auth-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--soft-brown);
+}
+
+.mobile-auth-buttons .btn {
+    width: 100%;
+    justify-content: center;
+}
+
+/* Show mobile menu on smaller screens */
+@media (max-width: 768px) {
+    .mobile-menu {
+        display: block;
+    }
+    
+    .nav-links, .auth-buttons {
+        display: none;
+    }
+}
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Page -->
+    <div class="welcome-page" id="welcomePage">
+        <div class="floating-books">
+            <div class="floating-book"><i class="fas fa-book"></i></div>
+            <div class="floating-book"><i class="fas fa-book-open"></i></div>
+            <div class="floating-book"><i class="fas fa-bookmark"></i></div>
+            <div class="floating-book"><i class="fas fa-book-reader"></i></div>
+            <div class="floating-book"><i class="fas fa-graduation-cap"></i></div>
+        </div>
+        
+        <div class="welcome-logo">
+            <i class="fas fa-book"></i>
+            <h1>BookExchange</h1>
+            <p>Share Knowledge, Build Community</p>
+        </div>
+        
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+        
+        <div class="welcome-tagline">
+            Connecting Students Through the Power of Books
+        </div>
+        
+        <button class="enter-btn" id="enterBtn">
+            Enter Website <i class="fas fa-arrow-right"></i>
+        </button>
+    </div>
+
+    <!-- Main Website Content -->
+    <div class="main-content" id="mainContent" style="display: none;">
+        <!-- Header -->
+        <header>
+            <div class="container">
+                <nav class="navbar">
+                    <a href="#" class="logo" onclick="showPage('home')">
+                        <i class="fas fa-book"></i>
+                        BookExchange
+                    </a>
+                    
+                    <div class="nav-links">
+                        <a href="#" onclick="showPage('home')" class="active">Home</a>
+                        <a href="#" onclick="showPage('books')">Books</a>
+                        <a href="#" onclick="showPage('get-books')">Get Books</a>
+                        <a href="#" onclick="showPage('add-book')">Add Book</a>
+                        <a href="#" onclick="showPage('about')">About</a>
+                        <a href="#" onclick="showPage('contact')">Contact</a>
+                    </div>
+                    
+                    <div class="auth-buttons">
+                        <button class="btn btn-outline" onclick="showPage('login')" id="loginBtn">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                        <button class="btn btn-primary" onclick="showPage('login')" id="signupBtn">
+                            <i class="fas fa-user-plus"></i> Sign Up
+                        </button>
+                        <button class="btn btn-primary" onclick="showPage('profile')" id="profileBtn" style="display: none;">
+                            <i class="fas fa-user"></i> Profile
+                        </button>
+                    </div>
+                    
+                    <!-- Mobile Menu Button -->
+<button class="mobile-menu" id="mobileMenuBtn">
+    <i class="fas fa-bars"></i>
+</button>
+
+<!-- Mobile Navigation -->
+<div class="mobile-nav" id="mobileNav">
+    <a href="#" class="mobile-nav-link" data-page="home">
+        <i class="fas fa-home"></i> Home
+    </a>
+    <a href="#" class="mobile-nav-link" data-page="books">
+        <i class="fas fa-book"></i> Books
+    </a>
+    <a href="#" class="mobile-nav-link" data-page="get-books">
+        <i class="fas fa-handshake"></i> Get Books
+    </a>
+    <a href="#" class="mobile-nav-link" data-page="add-book">
+        <i class="fas fa-plus-circle"></i> Add Book
+    </a>
+    <a href="#" class="mobile-nav-link" data-page="about">
+        <i class="fas fa-info-circle"></i> About
+    </a>
+    <a href="#" class="mobile-nav-link" data-page="contact">
+        <i class="fas fa-envelope"></i> Contact
+    </a>
+    <a href="#" class="mobile-nav-link" data-page="profile" id="mobileProfileLink" style="display: none;">
+        <i class="fas fa-user"></i> Profile
+    </a>
+    
+    <div class="mobile-auth-buttons">
+        <button class="btn btn-outline mobile-nav-link" data-page="login" id="mobileLoginBtn">
+            <i class="fas fa-sign-in-alt"></i> Login
+        </button>
+        <button class="btn btn-primary mobile-nav-link" data-page="login" id="mobileSignupBtn">
+            <i class="fas fa-user-plus"></i> Sign Up
+        </button>
+    </div>
+</div>
+                </nav>
+                
+                <!-- Mobile Navigation -->
+                <div class="mobile-nav">
+                    <a href="#" onclick="showPage('home')">Home</a>
+                    <a href="#" onclick="showPage('books')">Books</a>
+                    <a href="#" onclick="showPage('get-books')">Get Books</a>
+                    <a href="#" onclick="showPage('add-book')">Add Book</a>
+                    <a href="#" onclick="showPage('about')">About</a>
+                    <a href="#" onclick="showPage('contact')">Contact</a>
+                    <a href="#" onclick="showPage('profile')" id="mobileProfileLink" style="display: none;">Profile</a>
+                    
+                    <div class="mobile-auth-buttons">
+                        <button class="btn btn-outline" onclick="showPage('login')" style="width: 100%;" id="mobileLoginBtn">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                        <button class="btn btn-primary" onclick="showPage('login')" style="width: 100%;" id="mobileSignupBtn">
+                            <i class="fas fa-user-plus"></i> Sign Up
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Home Page -->
+        <section id="home" class="page active">
+            <!-- Hero Section -->
+            <div class="hero">
+                <div class="container">
+                    <div class="hero-content">
+                        <div class="hero-text">
+                            <h1 class="hero-title">Book Exchange System</h1>
+                            <p class="hero-tagline">📚 Give a Book, Gain Knowledge… or at least a cool story to brag about!</p>
+                            <button class="btn btn-primary" onclick="showPage('books')">
+                                Browse Books <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                        <div class="hero-image">
+                            <svg class="book-illustration" viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M100,100 L400,100 L400,300 L100,300 Z" fill="#FFB74D" stroke="#5D4037" stroke-width="2"/>
+                                <path d="M100,100 L100,300" fill="none" stroke="#5D4037" stroke-width="2"/>
+                                <path d="M120,120 L380,120 L380,280 L120,280 Z" fill="#FFF5E1" stroke="#5D4037" stroke-width="1"/>
+                                <path d="M150,150 L330,150" stroke="#5D4037" stroke-width="1"/>
+                                <path d="M150,170 L330,170" stroke="#5D4037" stroke-width="1"/>
+                                <path d="M150,190 L280,190" stroke="#5D4037" stroke-width="1"/>
+                                <path d="M150,210 L310,210" stroke="#5D4037" stroke-width="1"/>
+                                <path d="M150,230 L290,230" stroke="#5D4037" stroke-width="1"/>
+                                <circle cx="250" cy="250" r="30" fill="#FFD8CC" stroke="#5D4037" stroke-width="1"/>
+                                <path d="M240,240 L260,260 M260,240 L240,260" stroke="#5D4037" stroke-width="2"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Section -->
+            <div class="features">
+                <div class="container">
+                    <h2 class="section-title">How It Works</h2>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                            <h3 class="feature-title">Exchange Books</h3>
+                            <p>Trade your books with other students and expand your collection without spending money.</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-gift"></i>
+                            </div>
+                            <h3 class="feature-title">Donate Books</h3>
+                            <p>Give away books you no longer need and help fellow students access educational resources.</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <h3 class="feature-title">Request Books</h3>
+                            <p>Looking for a specific book? Post a request and get notified when it becomes available.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Books -->
+            <div class="featured-books">
+                <div class="container">
+                    <h2 class="section-title">Featured Books</h2>
+                    <div class="books-carousel">
+                        <div class="books-container" id="booksContainer">
+                            <!-- Book cards will be added by JavaScript -->
+                        </div>
+                        <div class="carousel-controls">
+                            <button class="carousel-btn" id="prevBtn">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="carousel-btn" id="nextBtn">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="stats">
+                <div class="container">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number" id="bookCount">0</div>
+                            <div class="stat-label">Books Exchanged</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="userCount">0</div>
+                            <div class="stat-label">Active Users</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="collegeCount">0</div>
+                            <div class="stat-label">Colleges</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="satisfactionCount">0%</div>
+                            <div class="stat-label">Satisfaction Rate</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Books Page -->
+        <section id="books" class="page">
+            <div class="books-page">
+                <div class="container">
+                    <h2 class="section-title">Browse Books</h2>
+                    
+                    <div class="search-filter">
+                        <div class="search-bar">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search for books, authors, or categories..." id="searchInput">
+                        </div>
+                        
+                        <div class="filter-dropdown">
+                            <select id="categoryFilter">
+                                <option value="">All Categories</option>
+                                <option value="textbooks">Textbooks</option>
+                                <option value="fiction">Fiction</option>
+                                <option value="non-fiction">Non-Fiction</option>
+                                <option value="academic">Academic</option>
+                                <option value="reference">Reference</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-dropdown">
+                            <select id="conditionFilter">
+                                <option value="">All Conditions</option>
+                                <option value="new">Like New</option>
+                                <option value="excellent">Excellent</option>
+                                <option value="good">Good</option>
+                                <option value="fair">Fair</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="books-grid" id="booksGrid">
+                        <!-- Book cards will be added by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Get Books Page -->
+        <section id="get-books" class="page">
+            <div class="get-books-page">
+                <div class="container">
+                    <h2 class="section-title">Get Your Next Favorite Book</h2>
+                    <p style="text-align: center; max-width: 700px; margin: 0 auto 40px; font-size: 1.1rem;">
+                        Discover multiple ways to acquire books through our community. Exchange, request, or find free books shared by fellow students.
+                    </p>
+                    
+                    <!-- How It Works Section -->
+                    <div class="steps-container">
+                        <div class="step">
+                            <div class="step-icon">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="step-number">1</div>
+                            <h3>Browse Available Books</h3>
+                            <p>Explore our collection of books shared by other students. Use filters to find exactly what you're looking for.</p>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-icon">
+                                <i class="fas fa-handshake"></i>
+                            </div>
+                            <div class="step-number">2</div>
+                            <h3>Choose Acquisition Method</h3>
+                            <p>Select how you want to get the book - through exchange, request, or direct pickup if available.</p>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <div class="step-number">3</div>
+                            <h3>Receive Your Book</h3>
+                            <p>Arrange pickup or delivery and enjoy your new book! Don't forget to leave a review for the donor.</p>
+                        </div>
+                    </div>
+
+                    <!-- Acquisition Methods Section -->
+                    <h2 class="section-title" style="margin-top: 80px;">Ways to Get Books</h2>
+                    <div class="methods-container">
+                        <div class="method-card">
+                            <div class="method-icon">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                            <h3>Book Exchange</h3>
+                            <p>Trade books you've already read for new ones. Find users who want your books and arrange a swap.</p>
+                            <button class="btn btn-outline" onclick="showPage('books')">Start Trading</button>
+                        </div>
+                        
+                        <div class="method-card">
+                            <div class="method-icon">
+                                <i class="fas fa-hands-helping"></i>
+                            </div>
+                            <h3>Request System</h3>
+                            <p>Can't find the book you need? Post a request and get notified when it becomes available.</p>
+                            <button class="btn btn-outline" onclick="document.getElementById('bookRequestForm').scrollIntoView({ behavior: 'smooth' })">Make a Request</button>
+                        </div>
+                        
+                        <div class="method-card">
+                            <div class="method-icon">
+                                <i class="fas fa-gift"></i>
+                            </div>
+                            <h3>Free Books</h3>
+                            <p>Get books that other students are giving away for free. Perfect for building your collection.</p>
+                            <button class="btn btn-outline" onclick="showPage('books')">Browse Free Books</button>
+                        </div>
+                    </div>
+
+                    <!-- Trade Process Section -->
+                    <h2 class="section-title" style="margin-top: 80px;">How Book Trading Works</h2>
+                    <div class="trade-process">
+                        <div class="process-step">
+                            <div class="process-icon">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <h4>Find a Match</h4>
+                            <p>Browse books or use our matching system to find users who have what you want and want what you have.</p>
+                        </div>
+                        
+                        <div class="process-step">
+                            <div class="process-icon">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <h4>Initiate Trade</h4>
+                            <p>Send a trade request to the book owner. Discuss details like condition, meeting point, etc.</p>
+                        </div>
+                        
+                        <div class="process-step">
+                            <div class="process-icon">
+                                <i class="fas fa-handshake"></i>
+                            </div>
+                            <h4>Confirm Trade</h4>
+                            <p>Both parties agree to the trade terms. Our system helps facilitate a smooth exchange.</p>
+                        </div>
+                        
+                        <div class="process-step">
+                            <div class="process-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <h4>Exchange Books</h4>
+                            <p>Meet on campus or use our designated exchange points to swap books.</p>
+                        </div>
+                        
+                        <div class="process-step">
+                            <div class="process-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <h4>Leave Feedback</h4>
+                            <p>Rate your trading experience and help build our trusted community.</p>
+                        </div>
+                    </div>
+
+                    <!-- Book Request Section -->
+                    <h2 class="section-title" style="margin-top: 80px;">Request a Book</h2>
+                    <div class="form-container">
+                        <form id="bookRequestForm">
+                            <div class="form-group">
+                                <label for="requestBookTitle">Book Title</label>
+                                <input type="text" id="requestBookTitle" class="form-control" placeholder="Enter the book title you're looking for" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="requestBookAuthor">Author</label>
+                                <input type="text" id="requestBookAuthor" class="form-control" placeholder="Author name (optional)">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="requestBookCategory">Category</label>
+                                <select id="requestBookCategory" class="form-control" required>
+                                    <option value="">Select a category</option>
+                                    <option value="textbooks">Textbooks</option>
+                                    <option value="fiction">Fiction</option>
+                                    <option value="non-fiction">Non-Fiction</option>
+                                    <option value="academic">Academic</option>
+                                    <option value="reference">Reference</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="urgency">Urgency</label>
+                                <select id="urgency" class="form-control" required>
+                                    <option value="">How soon do you need it?</option>
+                                    <option value="low">Whenever available</option>
+                                    <option value="medium">In the next few weeks</option>
+                                    <option value="high">As soon as possible</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="offerType">What can you offer?</label>
+                                <select id="offerType" class="form-control" required>
+                                    <option value="">Select an option</option>
+                                    <option value="exchange">Book exchange</option>
+                                    <option value="purchase">Willing to purchase</option>
+                                    <option value="free">Looking for free donation</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="additionalInfo">Additional Information</label>
+                                <textarea id="additionalInfo" class="form-control" placeholder="Any specific edition, condition preferences, or other details..."></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                <i class="fas fa-paper-plane"></i> Submit Request
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Add Book Page -->
+        <section id="add-book" class="page">
+            <div class="add-book-page">
+                <div class="container">
+                    <h2 class="section-title">Add a New Book</h2>
+                    
+                    <div class="add-book-form-container">
+                        <form id="addBookForm">
+                            <div class="form-group">
+                                <label for="bookTitle">Book Title</label>
+                                <input type="text" id="bookTitle" class="form-control" placeholder="Enter book title" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="bookAuthor">Author</label>
+                                <input type="text" id="bookAuthor" class="form-control" placeholder="Enter author name" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="bookCategory">Category</label>
+                                <select id="bookCategory" class="form-control" required>
+                                    <option value="">Select a category</option>
+                                    <option value="textbooks">Textbooks</option>
+                                    <option value="fiction">Fiction</option>
+                                    <option value="non-fiction">Non-Fiction</option>
+                                    <option value="academic">Academic</option>
+                                    <option value="reference">Reference</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="bookCondition">Condition</label>
+                                <select id="bookCondition" class="form-control" required>
+                                    <option value="">Select condition</option>
+                                    <option value="new">Like New</option>
+                                    <option value="excellent">Excellent</option>
+                                    <option value="good">Good</option>
+                                    <option value="fair">Fair</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="bookDescription">Description</label>
+                                <textarea id="bookDescription" class="form-control" placeholder="Brief description of the book"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Book Cover</label>
+                                <div class="file-upload">
+                                    <input type="file" id="bookImage" accept="image/*">
+                                    <label for="bookImage" class="file-upload-label">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span>Upload Book Cover Image</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-large" style="width: 100%;">
+                                <i class="fas fa-plus-circle"></i> Add Book
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Login Page -->
+        <section id="login" class="page">
+            <div class="login-page">
+                <div class="login-container">
+                    <div class="login-image">
+                        <div class="login-image-content">
+                            <h2>Welcome Back!</h2>
+                            <p>Sign in to continue your reading journey and connect with fellow book lovers.</p>
+                            <div class="login-features">
+                                <div class="login-feature">
+                                    <i class="fas fa-exchange-alt"></i>
+                                    <span>Exchange books with students</span>
+                                </div>
+                                <div class="login-feature">
+                                    <i class="fas fa-bookmark"></i>
+                                    <span>Save your favorite books</span>
+                                </div>
+                                <div class="login-feature">
+                                    <i class="fas fa-users"></i>
+                                    <span>Join book clubs and discussions</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="login-form-section">
+                        <div class="glass-card">
+                            <h2 class="form-title">Welcome Back</h2>
+                            
+                            <form id="loginForm">
+                                <div class="form-group">
+                                    <label for="loginEmail">Email</label>
+                                    <input type="email" id="loginEmail" class="form-control" placeholder="Enter your email" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="loginPassword">Password</label>
+                                    <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary btn-large" style="width: 100%;">
+                                    <i class="fas fa-sign-in-alt"></i> Login
+                                </button>
+                                
+                                <div class="form-footer">
+                                    <p>Don't have an account? <a href="#" onclick="switchToSignup()">Sign up here</a></p>
+                                </div>
+                            </form>
+                            
+                            <form id="signupForm" style="display: none;">
+                                <h2 class="form-title">Create Account</h2>
+                                
+                                <div class="form-group">
+                                    <label for="signupName">Full Name</label>
+                                    <input type="text" id="signupName" class="form-control" placeholder="Enter your full name" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="signupEmail">Email</label>
+                                    <input type="email" id="signupEmail" class="form-control" placeholder="Enter your email" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="signupPassword">Password</label>
+                                    <input type="password" id="signupPassword" class="form-control" placeholder="Create a password" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="signupConfirmPassword">Confirm Password</label>
+                                    <input type="password" id="signupConfirmPassword" class="form-control" placeholder="Confirm your password" required>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary btn-large" style="width: 100%;">
+                                    <i class="fas fa-user-plus"></i> Sign Up
+                                </button>
+                                
+                                <div class="form-footer">
+                                    <p>Already have an account? <a href="#" onclick="switchToLogin()">Login here</a></p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Page -->
+        <section id="about" class="page">
+            <div class="about-page">
+                <div class="container">
+                    <h2 class="section-title">About BookExchange</h2>
+                    
+                    <div class="about-content">
+                        <div class="about-text">
+                            <p>BookExchange is a platform designed to help students share knowledge and resources within their college community. Our mission is to make educational materials more accessible and affordable for everyone.</p>
+                            
+                            <p>Founded in 2025, we believe that knowledge should be shared freely. By facilitating book exchanges, donations, and requests, we're building a sustainable ecosystem that benefits both students and the environment.</p>
+                            
+                            <p>Our platform connects students across campuses, allowing them to trade textbooks, fiction, non-fiction, and academic resources. Whether you're looking to save money on textbooks or find your next favorite novel, BookExchange makes it easy.</p>
+                        </div>
+                        
+                        <h3 style="text-align: center; margin-top: 50px;">Our Team</h3>
+                        <div class="team-grid">
+                            <div class="team-member">
+                                <div class="member-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <h4>Jatin Kumar</h4>
+                                <p></p>
+                            </div>
+                            
+                            <div class="team-member">
+                                <div class="member-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <h4>harsh mavi</h4>
+                                <p></p>
+                            </div>
+                            
+                            <div class="team-member">
+                                <div class="member-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <h4>jasvinder</h4>
+                                <p></p>
+                            </div>
+                            
+                            <div class="team-member">
+                                <div class="member-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <h4>kanishk nuniya</h4>
+                                <p></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Page -->
+        <section id="contact" class="page">
+            <div class="contact-page">
+                <div class="container">
+                    <h2 class="section-title">Get In Touch</h2>
+                    
+                    <div class="contact-content">
+                        <div class="contact-info">
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div>
+                                    <h4>Our Location</h4>
+                                    <p>Meerut Institute of Engineering & Technology</p>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <div>
+                                    <h4>Phone Number</h4>
+                                    <p>+91 9837790967</p>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div>
+                                    <h4>Email Address</h4>
+                                    <p>jatin1234097@gmail.com</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-container">
+                            <form id="contactForm">
+                                <div class="form-group">
+                                    <label for="contactName">Your Name</label>
+                                    <input type="text" id="contactName" class="form-control" placeholder="Enter your name" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="contactEmail">Your Email</label>
+                                    <input type="email" id="contactEmail" class="form-control" placeholder="Enter your email" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="contactSubject">Subject</label>
+                                    <input type="text" id="contactSubject" class="form-control" placeholder="Enter subject" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="contactMessage">Message</label>
+                                    <textarea id="contactMessage" class="form-control" placeholder="Enter your message" rows="5" required></textarea>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary btn-large" style="width: 100%;">
+                                    <i class="fas fa-paper-plane"></i> Send Message
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Enhanced Profile Page -->
+        <section id="profile" class="page">
+            <div class="profile-page">
+                <div class="container profile-container">
+                    <!-- Profile Header -->
+                    <div class="profile-header">
+                        <div class="profile-background"></div>
+                        <div class="profile-content">
+                            <div class="profile-avatar">
+                                <div class="avatar-image">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <button class="edit-avatar" onclick="openEditModal()">
+                                    <i class="fas fa-camera"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="profile-info">
+                                <div class="profile-main">
+                                    <div class="user-details">
+                                        <h1 id="userName">Jatin Kumar</h1>
+                                        <p class="user-bio">📚 Avid reader | Tech enthusiast | Book collector | Love exchanging knowledge through books</p>
+                                        <div class="user-location">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            <span>Meerut, India</span>
+                                        </div>
+                                        <div class="user-joined">
+                                            <i class="fas fa-calendar-alt"></i>
+                                            <span>Member since January 2023</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="profile-actions">
+                                        <button class="btn btn-outline" onclick="openEditModal()">
+                                            <i class="fas fa-edit"></i> Edit Profile
+                                        </button>
+                                        <button class="btn btn-primary" onclick="shareProfile()">
+                                            <i class="fas fa-share-alt"></i> Share
+                                        </button>
+                                        <button class="btn btn-outline" onclick="logout()">
+                                            <i class="fas fa-sign-out-alt"></i> Logout
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="profile-stats">
+                                    <div class="stat-card">
+                                        <span class="stat-number" id="booksTraded">24</span>
+                                        <span class="stat-label">Books Traded</span>
+                                    </div>
+                                    <div class="stat-card">
+                                        <span class="stat-number" id="booksListed">15</span>
+                                        <span class="stat-label">Books Listed</span>
+                                    </div>
+                                    <div class="stat-card">
+                                        <span class="stat-number" id="successfulTrades">18</span>
+                                        <span class="stat-label">Successful Trades</span>
+                                    </div>
+                                    <div class="stat-card">
+                                        <span class="stat-number" id="userRating">4.8</span>
+                                        <span class="stat-label">User Rating</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profile Tabs -->
+                    <div class="profile-tabs">
+                        <div class="tabs-container">
+                            <button class="tab-btn active" onclick="switchProfileTab('my-books')">
+                                <i class="fas fa-book"></i> My Books
+                            </button>
+                            <button class="tab-btn" onclick="switchProfileTab('reviews')">
+                                <i class="fas fa-star"></i> Reviews
+                            </button>
+                            <button class="tab-btn" onclick="switchProfileTab('achievements')">
+                                <i class="fas fa-trophy"></i> Achievements
+                            </button>
+                            <button class="tab-btn" onclick="switchProfileTab('settings')">
+                                <i class="fas fa-cog"></i> Settings
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tab Content -->
+                    <div class="tab-content">
+                        <!-- My Books Tab -->
+                        <div id="my-books" class="tab-pane active">
+                            <h3>My Book Collection</h3>
+                            <div class="profile-books-grid" id="myBooksGrid">
+                                <!-- Books will be loaded here -->
+                            </div>
+                        </div>
+
+                        <!-- Reviews Tab -->
+                        <div id="reviews" class="tab-pane">
+                            <h3>My Reviews</h3>
+                            <div class="reviews-list" id="reviewsList">
+                                <!-- Reviews will be loaded here -->
+                            </div>
+                        </div>
+
+                        <!-- Achievements Tab -->
+                        <div id="achievements" class="tab-pane">
+                            <h3>My Achievements</h3>
+                            <div class="achievements-grid" id="achievementsGrid">
+                                <!-- Achievements will be loaded here -->
+                            </div>
+                        </div>
+
+                        <!-- Settings Tab -->
+                        <div id="settings" class="tab-pane">
+                            <h3>Account Settings</h3>
+                            
+                            <div class="settings-section">
+                                <h4>Privacy Settings</h4>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Profile Visibility</h4>
+                                        <p>Control who can see your profile</p>
+                                    </div>
+                                    <select class="form-control" style="width: auto;">
+                                        <option>Public</option>
+                                        <option>BookExchange Members</option>
+                                        <option>Only Me</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Email Notifications</h4>
+                                        <p>Receive email updates about trades and messages</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="settings-section">
+                                <h4>Trading Preferences</h4>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Auto-accept Trades</h4>
+                                        <p>Automatically accept fair trades</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Preferred Genres</h4>
+                                        <p>Get recommendations based on your interests</p>
+                                    </div>
+                                    <div class="genre-tags">
+                                        <span class="genre-tag active">Fiction</span>
+                                        <span class="genre-tag active">Technology</span>
+                                        <span class="genre-tag">Science</span>
+                                        <span class="genre-tag">History</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="settings-section">
+                                <h4>Account Management</h4>
+                                <button class="btn btn-outline" style="margin-right: 10px;">
+                                    <i class="fas fa-download"></i> Export Data
+                                </button>
+                                <button class="btn btn-outline" style="margin-right: 10px;">
+                                    <i class="fas fa-bell-slash"></i> Pause Notifications
+                                </button>
+                                <button class="btn btn-danger">
+                                    <i class="fas fa-trash"></i> Delete Account
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Edit Profile Modal -->
+        <div class="edit-profile-modal" id="editProfileModal">
+            <div class="modal-content">
+                <h2 style="margin-bottom: 20px;">Edit Profile</h2>
+                <form id="editProfileForm">
+                    <div class="form-group">
+                        <label>Display Name</label>
+                        <input type="text" class="form-control" value="Jatin Kumar">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Bio</label>
+                        <textarea class="form-control" rows="3">📚 Avid reader | Tech enthusiast | Book collector | Love exchanging knowledge through books</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" class="form-control" value="Meerut, India">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Favorite Genres</label>
+                        <div class="genre-selection">
+                            <label><input type="checkbox" checked> Fiction</label>
+                            <label><input type="checkbox" checked> Technology</label>
+                            <label><input type="checkbox"> Science</label>
+                            <label><input type="checkbox"> History</label>
+                            <label><input type="checkbox"> Biography</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions" style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button type="button" class="btn btn-outline" onclick="closeEditModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-column">
+                        <h3>BookExchange</h3>
+                        <p>A platform designed for students to share knowledge through book exchange, donation, and requests within their college community.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h3>Quick Links</h3>
+                        <ul class="footer-links">
+                            <li><a href="#" onclick="showPage('home')">Home</a></li>
+                            <li><a href="#" onclick="showPage('books')">Books</a></li>
+                            <li><a href="#" onclick="showPage('get-books')">Get Books</a></li>
+                            <li><a href="#" onclick="showPage('add-book')">Add Book</a></li>
+                            <li><a href="#" onclick="showPage('about')">About Us</a></li>
+                            <li><a href="#" onclick="showPage('contact')">Contact</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h3>Categories</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">Textbooks</a></li>
+                            <li><a href="#">Fiction</a></li>
+                            <li><a href="#">Non-Fiction</a></li>
+                            <li><a href="#">Academic</a></li>
+                            <li><a href="#">Reference</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h3>Newsletter</h3>
+                        <p>Subscribe to our newsletter for updates on new books and features.</p>
+                        <div class="search-bar" style="margin-top: 15px;">
+                            <input type="email" placeholder="Your email address">
+                            <button class="btn btn-primary" style="position: absolute; right: 5px; top: 50%; transform: translateY(-50%); padding: 8px 15px;">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="footer-bottom">
+                    <p>&copy; 2023 Book Exchange System. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Dark Mode Toggle -->
+        <div class="dark-mode-toggle">
+            <button class="toggle-btn" id="darkModeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // User Authentication State
+        let currentUser = null;
+
+        // Sample book data with acquisition methods
+        const books = [
+            {
+                title: "Atomic Habits",
+                author: "James Clear",
+                condition: "Like New",
+                category: "Self-Help",
+                image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=300&fit=crop",
+                status: "available",
+                acquisition: "exchange"
+            },
+            {
+                title: "Computer Networks",
+                author: "Andrew S. Tanenbaum",
+                condition: "Good",
+                category: "Computer Science",
+                image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&h=300&fit=crop",
+                status: "trading",
+                acquisition: "exchange"
+            },
+            {
+                title: "Clean Code",
+                author: "Robert C. Martin",
+                condition: "Excellent",
+                category: "Programming",
+                image: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=400&h=300&fit=crop",
+                status: "available",
+                acquisition: "free"
+            },
+            {
+                title: "The Design of Everyday Things",
+                author: "Don Norman",
+                condition: "Fair",
+                category: "Design",
+                image: "https://images.unsplash.com/photo-1589998059171-988d887df646?w=400&h=300&fit=crop",
+                status: "available",
+                acquisition: "exchange"
+            },
+            {
+                title: "Psychology of Money",
+                author: "Morgan Housel",
+                condition: "Like New",
+                category: "Finance",
+                image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop",
+                status: "reserved",
+                acquisition: "exchange"
+            },
+            {
+                title: "To Kill a Mockingbird",
+                author: "Harper Lee",
+                condition: "Good",
+                category: "Fiction",
+                image: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=300&fit=crop",
+                status: "available",
+                acquisition: "free"
+            }
+        ];
+
+        // Profile Data
+        const userProfile = {
+            name: "Jatin Kumar",
+            bio: "📚 Avid reader | Tech enthusiast | Book collector | Love exchanging knowledge through books",
+            location: "Meerut, India",
+            joinDate: "January 2023",
+            stats: {
+                booksTraded: 24,
+                booksListed: 15,
+                successfulTrades: 18,
+                userRating: 4.8
+            },
+            achievements: [
+                { id: 1, name: "First Trade", description: "Complete your first book trade", icon: "🤝", unlocked: true, progress: 100, date: "Jan 15, 2025" },
+                { id: 2, name: "Book Worm", description: "Read 10 books", icon: "📖", unlocked: true, progress: 100, date: "Mar 20, 2025" },
+                { id: 5, name: "Reviewer", description: "Write 5 book reviews", icon: "✍️", unlocked: true, progress: 100, date: "Jun 10, 2025" },
+            ],
+            myBooks: [
+                {
+                    id: 1,
+                    title: "Atomic Habits",
+                    author: "James Clear",
+                    condition: "Like New",
+                    category: "Self-Help",
+                    status: "available",
+                    image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=300&fit=crop"
+                },
+                {
+                    id: 2,
+                    title: "Clean Code",
+                    author: "Robert C. Martin",
+                    condition: "Excellent",
+                    category: "Programming",
+                    status: "trading",
+                    image: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=400&h=300&fit=crop"
+                },
+                {
+                    id: 3,
+                    title: "The Design of Everyday Things",
+                    author: "Don Norman",
+                    condition: "Good",
+                    category: "Design",
+                    status: "available",
+                    image: "https://images.unsplash.com/photo-1589998059171-988d887df646?w=400&h=300&fit=crop"
+                },
+                {
+                    id: 4,
+                    title: "Computer Networks",
+                    author: "Andrew S. Tanenbaum",
+                    condition: "Fair",
+                    category: "Computer Science",
+                    status: "reserved",
+                    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&h=300&fit=crop"
+                }
+            ],
+            reviews: [
+                {
+                    bookTitle: "Atomic Habits",
+                    rating: 5,
+                    date: "March 15, 2023",
+                    text: "This book completely changed my perspective on habit formation. The practical strategies are easy to implement and highly effective."
+                },
+                {
+                    bookTitle: "Clean Code",
+                    rating: 4,
+                    date: "April 2, 2023",
+                    text: "Essential reading for any serious programmer. Some concepts are advanced, but the principles are fundamental to writing maintainable code."
+                },
+                {
+                    bookTitle: "The Design of Everyday Things",
+                    rating: 5,
+                    date: "May 20, 2023",
+                    text: "Opened my eyes to the psychology behind good design. Every designer and developer should read this book."
+                }
+            ]
+        };
+
+        // Welcome Page Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const welcomePage = document.getElementById('welcomePage');
+            const mainContent = document.getElementById('mainContent');
+            const enterBtn = document.getElementById('enterBtn');
+            
+            // Auto-hide welcome page after 5 seconds
+            setTimeout(() => {
+                enterWebsite();
+            }, 5000);
+            
+            // Manual enter button
+            enterBtn.addEventListener('click', enterWebsite);
+            
+            function enterWebsite() {
+                welcomePage.classList.add('hidden');
+                setTimeout(() => {
+                    welcomePage.style.display = 'none';
+                    mainContent.style.display = 'block';
+                    // Initialize the main website
+                    initializeWebsite();
+                }, 800);
+            }
+
+            // Check if user is logged in
+            checkLoginStatus();
+        });
+
+        // Check Login Status
+        function checkLoginStatus() {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                updateNavigation();
+            }
+        }
+
+        // Update Navigation Based on Login Status
+        function updateNavigation() {
+            const loginBtn = document.getElementById('loginBtn');
+            const signupBtn = document.getElementById('signupBtn');
+            const profileBtn = document.getElementById('profileBtn');
+            const mobileLoginBtn = document.getElementById('mobileLoginBtn');
+            const mobileSignupBtn = document.getElementById('mobileSignupBtn');
+            const mobileProfileLink = document.getElementById('mobileProfileLink');
+
+            if (currentUser) {
+                // User is logged in - show profile button
+                loginBtn.style.display = 'none';
+                signupBtn.style.display = 'none';
+                profileBtn.style.display = 'inline-flex';
+                mobileLoginBtn.style.display = 'none';
+                mobileSignupBtn.style.display = 'none';
+                mobileProfileLink.style.display = 'block';
+            } else {
+                // User is not logged in - show login/signup buttons
+                loginBtn.style.display = 'inline-flex';
+                signupBtn.style.display = 'inline-flex';
+                profileBtn.style.display = 'none';
+                mobileLoginBtn.style.display = 'block';
+                mobileSignupBtn.style.display = 'block';
+                mobileProfileLink.style.display = 'none';
+            }
+        }
+
+        // Initialize Profile
+        function initializeProfile() {
+            if (!currentUser) {
+                // Redirect to login if not authenticated
+                showPage('login');
+                return;
+            }
+            
+            // Update only the main profile stats
+            updateMainProfileStats();
+            renderMyBooks();
+            renderReviews();
+            renderAchievements();
+        }
+
+        // Update only main profile statistics
+        function updateMainProfileStats() {
+            const stats = userProfile.stats;
+            
+            document.getElementById('booksTraded').textContent = stats.booksTraded;
+            document.getElementById('booksListed').textContent = stats.booksListed;
+            document.getElementById('successfulTrades').textContent = stats.successfulTrades;
+            document.getElementById('userRating').textContent = stats.userRating;
+        }
+
+        // Render My Books
+        function renderMyBooks() {
+            const grid = document.getElementById('myBooksGrid');
+            grid.innerHTML = '';
+
+            userProfile.myBooks.forEach(book => {
+                const statusClass = `status-${book.status}`;
+                const statusText = book.status.charAt(0).toUpperCase() + book.status.slice(1);
+
+                const bookCard = document.createElement('div');
+                bookCard.className = 'book-card';
+                bookCard.innerHTML = `
+                    <div class="book-status ${statusClass}">${statusText}</div>
+                    <img src="${book.image}" alt="${book.title}" class="book-image">
+                    <div class="book-info">
+                        <h3 class="book-title">${book.title}</h3>
+                        <p class="book-author">${book.author}</p>
+                        <div class="book-meta">
+                            <span>${book.condition}</span>
+                            <span>${book.category}</span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(bookCard);
+            });
+        }
+
+        // Render Reviews
+        function renderReviews() {
+            const list = document.getElementById('reviewsList');
+            list.innerHTML = '';
+
+            userProfile.reviews.forEach(review => {
+                const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+                
+                const reviewCard = document.createElement('div');
+                reviewCard.className = 'review-card';
+                reviewCard.innerHTML = `
+                    <div class="review-header">
+                        <div>
+                            <div class="review-book">${review.bookTitle}</div>
+                            <div class="review-rating">${stars}</div>
+                        </div>
+                        <div class="review-date">${review.date}</div>
+                    </div>
+                    <div class="review-text">${review.text}</div>
+                `;
+                list.appendChild(reviewCard);
+            });
+        }
+
+        // Render Achievements
+        function renderAchievements() {
+            const grid = document.getElementById('achievementsGrid');
+            grid.innerHTML = '';
+
+            userProfile.achievements.forEach(achievement => {
+                const achievementCard = document.createElement('div');
+                achievementCard.className = `achievement-card ${achievement.unlocked ? '' : 'locked'}`;
+                achievementCard.innerHTML = `
+                    <div class="achievement-icon">${achievement.icon}</div>
+                    <div class="achievement-name">${achievement.name}</div>
+                    <div class="achievement-desc">${achievement.description}</div>
+                    <div class="achievement-progress">
+                        <div class="progress-bar" style="width: ${achievement.progress}%"></div>
+                    </div>
+                    ${achievement.unlocked ? 
+                        `<div class="achievement-date">Unlocked: ${achievement.date}</div>` :
+                        `<div class="achievement-date">${achievement.progress}% complete</div>`
+                    }
+                `;
+                grid.appendChild(achievementCard);
+            });
+        }
+
+        // Tab Switching
+        function switchProfileTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-pane').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Edit Profile Modal
+        function openEditModal() {
+            document.getElementById('editProfileModal').classList.add('active');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editProfileModal').classList.remove('active');
+        }
+
+        // Share Profile
+        function shareProfile() {
+            if (navigator.share) {
+                navigator.share({
+                    title: `${userProfile.name}'s BookExchange Profile`,
+                    text: `Check out ${userProfile.name}'s book collection on BookExchange!`,
+                    url: window.location.href
+                });
+            } else {
+                // Fallback: copy profile URL to clipboard
+                navigator.clipboard.writeText(window.location.href);
+                alert('Profile link copied to clipboard!');
+            }
+        }
+
+        // Logout Function
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            updateNavigation();
+            showPage('home');
+            alert('You have been logged out successfully!');
+        }
+
+        // Page Navigation
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+            
+            // If books page, render books
+            if (pageId === 'books') {
+                renderBooksGrid();
+            }
+            
+            // If home page, initialize carousel
+            if (pageId === 'home') {
+                initializeCarousel();
+            }
+            
+            // If profile page, initialize profile
+            if (pageId === 'profile') {
+                initializeProfile();
+            }
+            
+            // Trigger animations for visible elements
+            setTimeout(() => {
+                animateOnScroll();
+            }, 100);
+        }
+
+        // Render books for grid view with acquisition options
+        function renderBooksGrid() {
+            const booksGrid = document.getElementById('booksGrid');
+            booksGrid.innerHTML = '';
+            
+            books.forEach(book => {
+                const statusClass = `status-${book.status}`;
+                const statusText = book.status.charAt(0).toUpperCase() + book.status.slice(1);
+                
+                let actionButton = '';
+                if (book.status === 'available') {
+                    if (book.acquisition === 'exchange') {
+                        actionButton = `<button class="btn btn-primary" onclick="initiateExchange('${book.title}')">
+                            <i class="fas fa-exchange-alt"></i> Exchange
+                        </button>`;
+                    } else if (book.acquisition === 'free') {
+                        actionButton = `<button class="btn btn-success" onclick="claimFreeBook('${book.title}')">
+                            <i class="fas fa-gift"></i> Get Free
+                        </button>`;
+                    }
+                } else if (book.status === 'trading') {
+                    actionButton = `<button class="btn btn-outline" onclick="addToWaitlist('${book.title}')">
+                        <i class="fas fa-clock"></i> Waitlist
+                    </button>`;
+                } else if (book.status === 'reserved') {
+                    actionButton = `<button class="btn btn-outline" disabled>
+                        <i class="fas fa-lock"></i> Reserved
+                    </button>`;
+                }
+
+                const bookCard = document.createElement('div');
+                bookCard.className = 'book-card';
+                bookCard.innerHTML = `
+                    <img src="${book.image}" alt="${book.title}" class="book-image">
+                    <div class="book-info">
+                        <h3 class="book-title">${book.title}</h3>
+                        <p class="book-author">${book.author}</p>
+                        <div class="book-meta">
+                            <span>${book.condition}</span>
+                            <span>${book.category}</span>
+                        </div>
+                        <div class="status ${statusClass}">${statusText}</div>
+                        <div class="book-actions">
+                            ${actionButton}
+                        </div>
+                    </div>
+                `;
+                booksGrid.appendChild(bookCard);
+            });
+            
+            // Trigger animations for book cards
+            setTimeout(() => {
+                const bookCards = document.querySelectorAll('.book-card');
+                bookCards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.classList.add('visible');
+                    }, index * 100);
+                });
+            }, 100);
+        }
+
+        // Book acquisition functions
+        function initiateExchange(bookTitle) {
+            if (!currentUser) {
+                alert('Please login to initiate an exchange.');
+                showPage('login');
+                return;
+            }
+            alert(`Initiating exchange for "${bookTitle}". You will be redirected to select a book for exchange.`);
+            // In a real app, this would redirect to an exchange page
+        }
+
+        function claimFreeBook(bookTitle) {
+            if (!currentUser) {
+                alert('Please login to claim a free book.');
+                showPage('login');
+                return;
+            }
+            alert(`Claiming "${bookTitle}" as a free book. Please arrange pickup with the owner.`);
+            // In a real app, this would initiate the free book claiming process
+        }
+
+        function addToWaitlist(bookTitle) {
+            if (!currentUser) {
+                alert('Please login to join the waitlist.');
+                showPage('login');
+                return;
+            }
+            alert(`Added "${bookTitle}" to your waitlist. We'll notify you when it becomes available.`);
+            // In a real app, this would add the user to the book's waitlist
+        }
+
+        // Carousel functionality
+        let currentPosition = 0;
+        const cardWidth = 270; // 250px width + 20px gap
+        
+        function initializeCarousel() {
+            const booksContainer = document.getElementById('booksContainer');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            // Clear container
+            booksContainer.innerHTML = '';
+            
+            // Add books to carousel
+            books.slice(0, 6).forEach(book => {
+                const bookCard = document.createElement('div');
+                bookCard.className = 'book-card';
+                bookCard.innerHTML = `
+                    <img src="${book.image}" alt="${book.title}" class="book-image">
+                    <div class="book-info">
+                        <h3 class="book-title">${book.title}</h3>
+                        <p class="book-author">${book.author}</p>
+                        <div class="book-meta">
+                            <span>${book.condition}</span>
+                            <span>${book.category}</span>
+                        </div>
+                    </div>
+                `;
+                booksContainer.appendChild(bookCard);
+            });
+            
+            // Set up event listeners
+            prevBtn.addEventListener('click', () => {
+                if (currentPosition > 0) {
+                    currentPosition--;
+                    updateCarousel();
+                }
+            });
+            
+            nextBtn.addEventListener('click', () => {
+                if (currentPosition < 2) { // Assuming 6 books, 3 visible at a time
+                    currentPosition++;
+                    updateCarousel();
+                }
+            });
+            
+            function updateCarousel() {
+                booksContainer.style.transform = `translateX(-${currentPosition * cardWidth}px)`;
+            }
+        }
+
+        // Form handling
+        document.getElementById('addBookForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Book added successfully!');
+            this.reset();
+            showPage('books');
+        });
+        
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Simulate login
+            currentUser = {
+                id: 1,
+                name: "Jatin Kumar",
+                email: document.getElementById('loginEmail').value
+            };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            updateNavigation();
+            alert('Logged in successfully!');
+            this.reset();
+            showPage('home');
+        });
+        
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Simulate signup and login
+            currentUser = {
+                id: 1,
+                name: document.getElementById('signupName').value,
+                email: document.getElementById('signupEmail').value
+            };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            updateNavigation();
+            alert('Account created successfully!');
+            this.reset();
+            showPage('home');
+        });
+        
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Message sent successfully!');
+            this.reset();
+        });
+
+        // Book request form handling
+        document.getElementById('bookRequestForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!currentUser) {
+                alert('Please login to submit a book request.');
+                showPage('login');
+                return;
+            }
+            alert('Your book request has been submitted successfully! We will notify you when a match is found.');
+            this.reset();
+        });
+
+        // Login/Signup form switching
+        function switchToSignup() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('signupForm').style.display = 'block';
+        }
+        
+        function switchToLogin() {
+            document.getElementById('signupForm').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+        }
+
+        // Dark mode toggle
+        document.getElementById('darkModeToggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            const icon = this.querySelector('i');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.className = 'fas fa-sun';
+            } else {
+                icon.className = 'fas fa-moon';
+            }
+        });
+
+        // Enhanced counter animation
+        function animateCounter(element, target, duration) {
+            let start = 0;
+            const increment = target / (duration / 16);
+            const timer = setInterval(() => {
+                start += increment;
+                if (start >= target) {
+                    element.textContent = target.toLocaleString();
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(start).toLocaleString();
+                }
+            }, 16);
+        }
+        
+
+       // Enhanced scroll animation function
+        function animateOnScroll() {
+            const elementsToAnimate = document.querySelectorAll('.feature-card, .book-card, .stat-item, .team-member, .contact-item');
+            const statNumbers = document.querySelectorAll('.stat-number');
+            
+            elementsToAnimate.forEach((element, index) => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('visible');
+                    
+                    // Animate counter for stat numbers only
+                    if (element.classList.contains('stat-item')) {
+                        const numberElement = statNumbers[index];
+                        if (numberElement && !numberElement.classList.contains('animated')) {
+                            numberElement.classList.add('animated');
+                            const target = parseInt(numberElement.getAttribute('data-target') || numberElement.textContent.replace(/,/g, ''));
+                            animateCounter(numberElement, target, 2000);
+                        }
+                    }
+                }
+            });
+        }
+        // Initialize main website
+        function initializeWebsite() {
+            // Render initial books grid
+            renderBooksGrid();
+            
+            // Initialize carousel
+            initializeCarousel();
+            
+            // Start counter animations
+            setTimeout(() => {
+                animateCounter(document.getElementById('bookCount'), 1250, 2000);
+                animateCounter(document.getElementById('userCount'), 500, 2000);
+                animateCounter(document.getElementById('collegeCount'), 25, 2000);
+                
+                // For percentage counter
+                const satisfactionElement = document.getElementById('satisfactionCount');
+                let satisfactionValue = 0;
+                const satisfactionTimer = setInterval(() => {
+                    satisfactionValue += 1;
+                    satisfactionElement.textContent = satisfactionValue + '%';
+                    if (satisfactionValue >= 98) {
+                        clearInterval(satisfactionTimer);
+                    }
+                }, 20);
+            }, 500);
+            
+            // Add scroll animation listener
+            window.addEventListener('scroll', animateOnScroll);
+            animateOnScroll(); // Check on initial load
+            
+            // Mobile menu toggle
+            document.querySelector('.mobile-menu').addEventListener('click', function() {
+                const mobileNav = document.querySelector('.mobile-nav');
+                mobileNav.classList.toggle('active');
+            });
+
+            // Edit profile form handler
+            document.getElementById('editProfileForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Profile updated successfully!');
+                closeEditModal();
+            });
+
+            // Close modal when clicking outside
+            document.getElementById('editProfileModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeEditModal();
+                }
+            });
+        }
+        // Mobile Menu Functionality
+function initMobileMenu() {
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileNav = document.getElementById('mobileNav');
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+    
+    if (mobileMenuBtn && mobileNav) {
+        // Toggle mobile menu
+        mobileMenuBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            mobileNav.classList.toggle('active');
+        });
+        
+        // Handle mobile navigation links
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const pageId = this.getAttribute('data-page');
+                if (pageId) {
+                    showPage(pageId);
+                    closeMobileNav();
+                }
+            });
+        });
+        
+        // Close mobile nav when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!mobileNav.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                closeMobileNav();
+            }
+        });
+        
+        // Close mobile nav on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeMobileNav();
+            }
+        });
+    }
+}
+
+// Close mobile navigation
+function closeMobileNav() {
+    const mobileNav = document.getElementById('mobileNav');
+    if (mobileNav) {
+        mobileNav.classList.remove('active');
+    }
+}
+
+// Update mobile navigation based on login status
+function updateMobileNavigation() {
+    const mobileProfileLink = document.getElementById('mobileProfileLink');
+    const mobileLoginBtn = document.getElementById('mobileLoginBtn');
+    const mobileSignupBtn = document.getElementById('mobileSignupBtn');
+    
+    if (currentUser) {
+        // User is logged in - show profile, hide login/signup
+        if (mobileProfileLink) mobileProfileLink.style.display = 'flex';
+        if (mobileLoginBtn) mobileLoginBtn.style.display = 'none';
+        if (mobileSignupBtn) mobileSignupBtn.style.display = 'none';
+    } else {
+        // User is not logged in - hide profile, show login/signup
+        if (mobileProfileLink) mobileProfileLink.style.display = 'none';
+        if (mobileLoginBtn) mobileLoginBtn.style.display = 'flex';
+        if (mobileSignupBtn) mobileSignupBtn.style.display = 'flex';
+    }
+}
+
+// Update your existing updateNavigation function
+function updateNavigation() {
+    // Update desktop navigation
+    const loginBtn = document.getElementById('loginBtn');
+    const signupBtn = document.getElementById('signupBtn');
+    const profileBtn = document.getElementById('profileBtn');
+
+    if (currentUser) {
+        if (loginBtn) loginBtn.style.display = 'none';
+        if (signupBtn) signupBtn.style.display = 'none';
+        if (profileBtn) profileBtn.style.display = 'inline-flex';
+    } else {
+        if (loginBtn) loginBtn.style.display = 'inline-flex';
+        if (signupBtn) signupBtn.style.display = 'inline-flex';
+        if (profileBtn) profileBtn.style.display = 'none';
+    }
+    
+    // Update mobile navigation
+    updateMobileNavigation();
+}
+
+// Initialize mobile menu when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initMobileMenu();
+    
+    // Also update navigation on page load
+    updateNavigation();
+});
+
+// Update your showPage function to close mobile nav
+function showPage(pageId) {
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+    });
+    
+    // Show selected page
+    document.getElementById(pageId).classList.add('active');
+    
+    // Scroll to top
+    window.scrollTo(0, 0);
+    
+    // Close mobile navigation
+    closeMobileNav();
+    
+    // Load appropriate data
+    switch(pageId) {
+        case 'books':
+            renderBooksGrid();
+            break;
+        case 'home':
+            initializeCarousel();
+            loadDashboardStats();
+            break;
+        case 'profile':
+            initializeProfile();
+            break;
+    }
+    
+    // Trigger animations
+    setTimeout(() => {
+        animateOnScroll();
+    }, 100);
+}
+    </script>
+    
+</body>
+</html>
